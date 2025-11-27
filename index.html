@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectura Crítica 2025 - Simulacro PreICFES</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #9d50bb, #6e48aa);
+            min-height: 100vh;
+            color: white;
+            padding: 20px 0;
+        }
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+        }
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .content {
+            padding: 50px 40px;
+            color: #333;
+        }
+        h2 {
+            color: #6e48aa;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+        .info-text {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 35px;
+            line-height: 1.6;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.2rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            transition: all 0.3s;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #9d50bb;
+            box-shadow: 0 0 0 4px rgba(157,80,187,0.2);
+        }
+        button {
+            background: linear-gradient(135deg, #7189d9, #6e48aa);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border-radius: 15px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        button:hover:not(:disabled) {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(110,72,170,0.4);
+        }
+        button:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .question {
+            background: #f8f9ff;
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 30px;
+            border-left: 7px solid #9d50bb;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .question h3 {
+            color: #5a32a3;
+            margin-bottom: 20px;
+            font-size: 1.35rem;
+            line-height: 1.6;
+        }
+        .options label {
+            display: block;
+            padding: 16px 20px;
+            margin: 12px 0;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+        }
+        .options label:hover {
+            background: #f3e8ff;
+            border-color: #9d50bb;
+            transform: translateX(8px);
+        }
+        .options input[type="radio"]:checked + span {
+            font-weight: 600;
+            color: #6e48aa;
+        }
+        .result {
+            text-align: center;
+            padding: 50px 30px;
+        }
+        .score {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #6e48aa;
+            margin: 25px 0;
+        }
+        .correct { color: #48bb78; background: #f0fff4; padding: 18px; border-radius: 14px; margin: 12px 0; }
+        .incorrect { color: #f56565; background: #fff5f5; padding: 18px; border-radius: 14px; margin: 12px 0; }
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255,255,255,0.9);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2.3rem; }
+            .content { padding: 35px 25px; }
+            .question h3 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Lectura Crítica 2025</h1>
+        <p>Simulacro de Lectura Crítica para PreICFES</p>
+    </div>
+
+    <div class="container" id="start-screen">
+        <div class="content">
+            <h2>¡Bienvenido al Simulacro!</h2>
+            <p class="info-text">
+                Este cuestionario contiene 15 preguntas
+            </p>
+            <input type="text" id="student-name" placeholder="Escribe tu nombre para comenzar" oninput="checkName()">
+            <button id="start-btn" disabled>Iniciar Simulacro</button>
+        </div>
+    </div>
+
+    <div class="container" id="quiz-screen" style="display:none;">
+        <div class="content">
+            <h2>Preguntas del Simulacro</h2>
+            <div id="questions"></div>
+            <button id="submit-btn">Enviar Respuestas</button>
+        </div>
+    </div>
+
+    <div class="container" id="result-screen" style="display:none;">
+        <div class="content result">
+            <h2>¡Simulacro Completado!</h2>
+            <div class="score" id="score"></div>
+            <div id="details"></div>
+            <button onclick="restartQuiz()" style="margin-top:40px; max-width:500px;">Volver a Intentar</button>
+        </div>
+    </div>
+
+    <footer>
+        Desarrollado por Alexis García Quintero
+    </footer>
+
+    <script>
+        const questionBank = [
+            { question: "¿Cuál es el prejuicio que se expresa en el recuadro 2?", options: ["A. Los hombres no deben ser fuertes.", "B. Los hombres no deben expresar dolor.", "C. Los hombres no deben sentir dolor.", "D. Los hombres no deben ser humanos."], correct: "B" },
+            { question: "¿Qué hace el autor de la infografía para defender su argumento principal?", options: ["A. Acudir a su propia experiencia.", "B. Acudir al sentir de la mayoría de personas.", "C. Acudir al juicio de expertos.", "D. Acudir a prejuicios injustificados."], correct: "C" },
+            { question: "¿Qué está haciendo el tigre en el recuadro 3?", options: ["A. Sosteniendo un camión de juguete mientras conversa con el niño.", "B. Leyendo el escrito del niño mientras lo observa jugar.", "C. Ayudando al niño a escribir su trabajo.", "D. Gritando al niño su desacuerdo."], correct: "B" },
+            { question: "¿Cuál es la relación entre lo que está haciendo el niño en toda la tira cómica y lo que hace en el recuadro 2?", options: ["A. En el recuadro 2 el niño continúa haciendo lo que hace en el recuadro 1.", "B. En el recuadro 2 el niño interrumpe lo que está haciendo en el recuadro 1.", "C. En el recuadro 2 el niño completa lo que está haciendo en los recuadros 1 y 3.", "D. En el recuadro 2 el niño reanuda lo que dejó de hacer en los recuadros 1 y 3."], correct: "B" },
+            { question: "¿Qué expresan los gestos y las palabras del niño a lo largo del cómic?", options: ["A. Que está preocupado por terminar su escrito lo más pronto posible.", "B. Que no está preocupado por empezar pronto su escrito.", "C. Que no está tranquilo porque debe hacer su escrito.", "D. Que está tranquilo porque ya terminó su escrito."], correct: "B" },
+            { question: "Considere el siguiente fragmento del texto: “Respecto al embalaje, se entiende como cualquier medio material destinado a proteger una mercadería...” Al respecto, la palabra “cualquier”", options: ["A. se refiere a algunos de los medios...", "B. se refiere al conjunto de todos los medios...", "C. se refiere a uno de los medios...", "D. se refiere a la mayoría de los medios más eficientes..."], correct: "B" },
+            { question: "En la primera parte del texto, las secciones señaladas con los números 1 y 2 tienen la función de:", options: ["A. Clasificar los diferentes tipos de empaques.", "B. Establecer la diferencia entre empaque y embalaje.", "C. Explicar la función de cada tipo de embalaje.", "D. Distinguir y nombrar las diferentes clases de envases y embalajes."], correct: "B" },
+            { question: "De acuerdo con el texto, la columna The Ethicist se publica", options: ["A. diariamente.", "B. semanalmente.", "C. quincenalmente.", "D. mensualmente."], correct: "B" },
+            { question: "Según el texto, el Ethicist es", options: ["A. alguien que ofrece consejos éticos.", "B. un asiduo lector de The New York Times.", "C. algún provocador que cuestiona la moral.", "D. un periodista que entrevista a Randy Cohen."], correct: "A" },
+            { question: "Al afirmar que la columna del Ethicist “no es la voz del Olimpo”, la defensora del lector quiere decir que el contenido", options: ["A. no deba tomarse como incuestionable.", "B. no debe influir en el modo de actuar de los lectores.", "C. no refleja lo verdaderamente correcto.", "D. no les aporta nada a las discusiones éticas realmente importantes."], correct: "A" },
+            { question: "Considere el siguiente fragmento: “En el año 2000, una mujer preguntó si era correcto llevar su bebida y bocadillos al cine, aunque estuviera prohibido.” Mediante la palabra “aunque”, el autor da a entender que la mujer", options: ["A. consideraba que llevar comida al cine nunca estuvo prohibido.", "B. no tenía claro si lo prohibido era siempre correcto.", "C. se preguntaba si llevar comida al cine estaba prohibido.", "D. creía que todo lo que está prohibido es necesariamente incorrecto."], correct: "D" },
+            { question: "Se puede concluir que, para Tim Adams, el autor del texto,", options: ["A. si prolongamos la vida habrá sobrepoblación y será aburrido vivir tanto.", "B. es necesario crear pastillas para vivir más y ser más inteligentes.", "C. lo que va en contra del orden natural de las cosas es cuestionable.", "D. se hace investigación médica para extender la vida."], correct: "C" },
+            { question: "Según Nick Bostrom, rechazar las pastillas que nos harían más inteligentes o las que desacelerarían el envejecimiento, alegando que irían contra el orden natural de las cosas, es", options: ["A. conveniente, porque lo natural siempre es bueno.", "B. inconveniente, porque lo natural nunca es bueno.", "C. conveniente, porque lo natural es equiparable con lo bueno.", "D. inconveniente, porque lo natural no es equiparable con lo bueno."], correct: "D" },
+            { question: "De acuerdo con el texto, cuando fray Guillermo halló a Adso, este se sintió", options: ["A. confundido...", "B. desconsolado...", "C. arrepentido...", "D. traicionado..."], correct: "C" },
+            { question: "Considere la siguiente pregunta presente en el texto: “¿es tan anormal que también nosotros nos sintamos atraídos por las gracias y la nobleza de ese sexo?” A través de la anterior pregunta, fray Guillermo busca", options: ["A. brindarle un nuevo tema de reflexión a Adso.", "B. expresar su indulgencia y comprensión hacia Adso.", "C. afirmar que él nunca ha sentido atracción por una mujer.", "D. reprobar que los hombres se sientan atraídos por las mujeres."], correct: "B" }
+        ];
+
+        let userAnswers = [], studentName = '';
+
+        function checkName() {
+            studentName = document.getElementById('student-name').value.trim();
+            document.getElementById('start-btn').disabled = studentName === '';
+        }
+
+        document.getElementById('start-btn').onclick = () => {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'block';
+            const qDiv = document.getElementById('questions');
+            qDiv.innerHTML = '';
+            questionBank.forEach((q, i) => {
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.innerHTML = `<h3>${i+1}. ${q.question}</h3>
+                    <div class="options">
+                        ${q.options.map(opt => `
+                            <label><input type="radio" name="q${i}" value="${opt[0]}"> <span>${opt}</span></label>
+                        `).join('')}
+                    </div>`;
+                qDiv.appendChild(div);
+            });
+        };
+
+        document.getElementById('submit-btn').onclick = () => {
+            userAnswers = questionBank.map((q, i) => {
+                const sel = document.querySelector(`input[name="q${i}"]:checked`);
+                return sel ? sel.value : null;
+            });
+
+            let correct = 0;
+            const details = document.getElementById('details');
+            details.innerHTML = '';
+            questionBank.forEach((q, i) => {
+                const p = document.createElement('div');
+                const isCorrect = userAnswers[i] === q.correct;
+                if (isCorrect) correct++;
+                p.innerHTML = `<strong>${i+1}.</strong> ${q.question}<br>
+                               <small>Tu respuesta: <strong>${userAnswers[i] || 'Sin responder'}</strong> → 
+                               Correcta: <strong>${q.correct}</strong></small>`;
+                p.className = isCorrect ? 'correct' : 'incorrect';
+                details.appendChild(p);
+            });
+
+            document.getElementById('score').innerHTML = `${studentName}<br>¡Obtuviste ${correct} de ${questionBank.length}!`;
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+        };
+
+        function restartQuiz() { location.reload(); }
+    </script>
+</body>
+</html>
